@@ -26,18 +26,24 @@ app.get('/api/hello', function(req, res) {
 
 app.post("/api/shorturl", (req, res) => {
   let url = req.body.url
-  let index = urls.length
+  let urlObject = new URL(url)
+  dns.lookup(urlObject.hostname, (e, address, family) => {
+    if(e) return res.status(400).json({
+      error: "invalid url"
+    })
+    let index = urls.length
     urls.push({ index: index + 1, value: url })
     return res.json({
       original_url: url,
       short_url: index + 1
     })
+  })
 })
 
 app.get("/api/shorturl/:index", (req, res) => {
   let index = Number(req.params.index)
   if(index > urls.length) return res.status(400).json({
-    error: "There is not an url referenced with this index"
+    error: "invalid url"
   })
   let url = urls[index - 1]
   res.redirect(url.value)
