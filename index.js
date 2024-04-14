@@ -28,7 +28,7 @@ app.post("/api/shorturl", (req, res) => {
   let url = req.body.url
   let urlObject = new URL(url)
   dns.lookup(urlObject.hostname, (e, address, family) => {
-    if(e) return res.status(400).json({
+    if(e) return res.json({
       error: "invalid url"
     })
     let index = urls.length
@@ -42,7 +42,7 @@ app.post("/api/shorturl", (req, res) => {
 
 app.get("/api/shorturl/:index", (req, res) => {
   let index = Number(req.params.index)
-  if(index > urls.length) return res.status(400).json({
+  if(index > urls.length) return res.json({
     error: "invalid url"
   })
   let url = urls[index - 1]
